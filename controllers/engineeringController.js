@@ -3,7 +3,7 @@ const { Jobs } = require('../models');
 let sql = require('mssql');
 require('dotenv').config();
 
-let sequelize = require('../config/index');
+// let sequelize = require('../config/index');
 let config = {
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
@@ -115,10 +115,20 @@ async function getTBRJobs(req, res) {
           }
           let records = recordset.recordsets[0];
 
-          const map = new Map();
-          records.forEach(item => map.set(item.JobNo, item));
-          jobData.forEach(item => map.set(item.jobNo, { ...map.get(item.jobNo), ...item }));
-          const fullJob = Array.from(map.values());
+          if (!records || records.length === 0) {
+            return res.status(200).send([]);
+          }
+
+          const recordMap = new Map();
+          records.forEach(item => recordMap.set(item.JobNo, item));
+
+          const fullJob = records.map(record => {
+            const jobItem = jobData.find(item => item.jobNo === record.JobNo);
+            return {
+              ...record,
+              ...jobItem
+            };
+          });
 
           res.send(fullJob);
         }
@@ -162,10 +172,20 @@ async function getFutureJobs(req, res) {
           }
           let records = recordset.recordsets[0];
 
-          const map = new Map();
-          records.forEach(item => map.set(item.JobNo, item));
-          jobData.forEach(item => map.set(item.jobNo, { ...map.get(item.jobNo), ...item }));
-          const fullJob = Array.from(map.values());
+          if (!records || records.length === 0) {
+            return res.status(200).send([]);
+          }
+
+          const recordMap = new Map();
+          records.forEach(item => recordMap.set(item.JobNo, item));
+
+          const fullJob = records.map(record => {
+            const jobItem = jobData.find(item => item.jobNo === record.JobNo);
+            return {
+              ...record,
+              ...jobItem
+            };
+          });
 
           res.send(fullJob);
         }
