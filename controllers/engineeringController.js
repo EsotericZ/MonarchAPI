@@ -426,36 +426,6 @@ async function updateModel(req, res) {
   }
 }
 
-async function updateExpedite(req, res) {
-  try {
-    const { id } = req.body;
-    const job = await Jobs.findOne({ where: { id } });
-
-    if (!job) {
-      return res.status(404).json({
-        status: 'error',
-        message: 'Job not found',
-      });
-    }
-
-    const newExpediteValue = job.expedite ? 0 : 1;
-    const result = await Jobs.update({ expedite: newExpediteValue }, { where: { id } });
-
-    return res.status(200).json({
-      status: 'success',
-      message: 'Expedite value updated successfully',
-      data: result,
-    });
-
-  } catch (err) {
-    return res.status(500).json({
-      status: 'error',
-      message: 'An error occurred while updating expedite',
-      error: err.message,
-    });
-  }
-}
-
 async function updateEngineer(req, res) {
   try {
     const { jobNo, engineer } = req.body;
@@ -531,7 +501,6 @@ module.exports = {
   getTBRJobs,
   updateJob,
   updateModel,
-  updateExpedite,
   updateEngineer,
   updateJobStatus
 }
