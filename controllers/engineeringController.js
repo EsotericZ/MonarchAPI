@@ -3,7 +3,6 @@ const { Jobs } = require('../models');
 let sql = require('mssql');
 require('dotenv').config();
 
-// let sequelize = require('../config/index');
 let config = {
   user: process.env.DB_USER,
   password: process.env.DB_PASS,

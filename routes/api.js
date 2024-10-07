@@ -4,6 +4,7 @@ let router = express.Router();
 const engineeringRoutes = require('./engineeringRoutes');
 const portalRoutes = require('./portalRoutes');
 const qcinfoRoutes = require('./qcinfoRoutes');
+const qualityRoutes = require('./qualityRoutes');
 const userRoutes = require('./userRoutes');
 
 router.get('/', function (req, res) {
@@ -13,6 +14,7 @@ router.get('/', function (req, res) {
 router.use('/engineering', engineeringRoutes);
 router.use('/portal', portalRoutes);
 router.use('/qcinfo', qcinfoRoutes);
+router.use('/quality', qualityRoutes);
 router.use('/users', userRoutes);
 
 module.exports = router;

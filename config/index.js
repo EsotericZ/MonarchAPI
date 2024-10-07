@@ -15,7 +15,11 @@ const sequelize = new Sequelize(
       ssl: false,
     },
     timezone: '-07:00',
-    logging: (msg) => console.error(msg),
+    logging: (msg) => {
+      if (msg.toLowerCase().includes('error')) {
+        console.error(msg); // Log only errors
+      }
+    },
   }
 );
 
