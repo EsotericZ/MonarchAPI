@@ -23,8 +23,8 @@ async function getAllJobs(req, res) {
         console.error('Error connecting to MSSQL:', err);
         return res.status(500).send({ error: 'Failed to connect to MSSQL' });
       }
-      let request = new sql.Request();
 
+      let request = new sql.Request();
       request.query(`
           SELECT R.JobNo, D.PartNo, D.Revision, R.EstimQty, D.DueDate, O.CustCode, D.User_Text3, D.User_Text2, D.User_Number3, R.OrderNo, R.StepNo, D.QuoteNo, D.WorkCode
           FROM OrderRouting R 
@@ -72,8 +72,8 @@ async function getUnconfirmedJobs(req, res) {
         console.error('Error connecting to MSSQL:', err);
         return res.status(500).send({ error: 'Failed to connect to MSSQL' });
       }
-      let request = new sql.Request();
 
+      let request = new sql.Request();
       request.query(`
         SELECT R.JobNo, D.PartNo, D.Revision, R.EstimQty, D.DueDate, O.CustCode, D.User_Text3, D.User_Text2, D.User_Number3, R.OrderNo, R.StepNo, D.QuoteNo, D.WorkCode
         FROM OrderRouting R INNER JOIN OrderDet D ON R.JobNo=D.JobNo 
@@ -107,8 +107,8 @@ async function getTBRJobs(req, res) {
         console.error('Error connecting to MSSQL:', err);
         return res.status(500).send({ error: 'Failed to connect to MSSQL' });
       }
-      let request = new sql.Request();
 
+      let request = new sql.Request();
       request.query(`
         SELECT R.JobNo, D.PartNo, D.Revision, R.EstimQty, D.DueDate, O.CustCode, D.User_Text3, D.User_Text2, D.User_Number3, R.OrderNo, R.StepNo, D.QuoteNo, D.WorkCode
         FROM OrderRouting R 
