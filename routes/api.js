@@ -7,6 +7,7 @@ const portalRoutes = require('./portalRoutes');
 const qcinfoRoutes = require('./qcinfoRoutes');
 const qualityRoutes = require('./qualityRoutes');
 const tapRoutes = require('./tapRoutes');
+const tlaserRoutes = require('./tlaserRoutes');
 const userRoutes = require('./userRoutes');
 
 router.get('/', function (req, res) {
@@ -19,6 +20,7 @@ router.use('/portal', portalRoutes);
 router.use('/qcinfo', qcinfoRoutes);
 router.use('/quality', qualityRoutes);
 router.use('/taps', tapRoutes);
+router.use('/tlaser', tlaserRoutes);
 router.use('/users', userRoutes);
 
 module.exports = router;

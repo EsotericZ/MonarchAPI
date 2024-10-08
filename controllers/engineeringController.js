@@ -44,11 +44,6 @@ async function getAllJobs(req, res) {
             return res.status(200).send([]);
           }
 
-          // const map = new Map();
-          // records.forEach(item => map.set(item.JobNo, item));
-          // jobData.forEach(item => map.set(item.jobNo, { ...map.get(item.jobNo), ...item }));
-          // const fullJob = Array.from(map.values());
-
           const recordMap = new Map();
           records.forEach(item => recordMap.set(item.JobNo, item));
 
