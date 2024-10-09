@@ -14,7 +14,7 @@ let config = {
 
 async function getAllJobs(req, res) {
   try {
-    const jobData = await TLJobs.findAll();
+    const jobData = await Jobs.findAll();
 
     sql.connect(config, function (err) {
       if (err) {
@@ -49,17 +49,29 @@ async function getAllJobs(req, res) {
 
           let records = recordset.recordsets[0];
 
-          const map = new Map();
-          records.forEach((item) => map.set(item.JobNo, item));
-          jobData.forEach((item) =>
-            map.set(item.jobNo, { ...map.get(item.jobNo), ...item })
-          );
-          const fullJob = Array.from(map.values());
+          if (!records || records.length === 0) {
+            return res.status(200).send([]);
+          }
 
-          return res.status(200).json({
-            status: 'success',
-            data: fullJob,
+          const uniqueJobs = new Map();
+
+          records.forEach(record => {
+            if (!uniqueJobs.has(record.JobNo)) {
+              uniqueJobs.set(record.JobNo, record);
+            }
           });
+
+          let fullJob = Array.from(uniqueJobs.values());
+
+          fullJob = fullJob.map(record => {
+            const jobItem = jobData.find(item => item.jobNo === record.JobNo);
+            return {
+              ...record,
+              ...jobItem
+            };
+          });
+
+          res.send(fullJob);
         }
       );
     });
