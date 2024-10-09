@@ -57,17 +57,22 @@ async function getAllJobs(req, res) {
 
           let records = recordset.recordsets[0];
 
-          const map = new Map();
-          records.forEach((item) => map.set(item.JobNo, item));
-          jobData.forEach((item) =>
-            map.set(item.jobNo, { ...map.get(item.jobNo), ...item })
-          );
-          const fullJob = Array.from(map.values());
+          if (!records || records.length === 0) {
+            return res.status(200).send([]);
+          }
 
-          return res.status(200).json({
-            status: 'success',
-            data: fullJob,
+          const recordMap = new Map();
+          records.forEach(item => recordMap.set(item.JobNo, item));
+
+          const fullJob = records.map(record => {
+            const jobItem = jobData.find(item => item.jobNo === record.JobNo);
+            return {
+              ...record,
+              ...jobItem
+            };
           });
+
+          res.send(fullJob);
         }
       );
     });
@@ -125,17 +130,22 @@ async function getTBRJobs(req, res) {
 
           let records = recordset.recordsets[0];
 
-          const map = new Map();
-          records.forEach((item) => map.set(item.JobNo, item));
-          jobData.forEach((item) =>
-            map.set(item.jobNo, { ...map.get(item.jobNo), ...item })
-          );
-          const fullJob = Array.from(map.values());
+          if (!records || records.length === 0) {
+            return res.status(200).send([]);
+          }
 
-          return res.status(200).json({
-            status: 'success',
-            data: fullJob,
+          const recordMap = new Map();
+          records.forEach(item => recordMap.set(item.JobNo, item));
+
+          const fullJob = records.map(record => {
+            const jobItem = jobData.find(item => item.jobNo === record.JobNo);
+            return {
+              ...record,
+              ...jobItem
+            };
           });
+
+          res.send(fullJob);
         }
       );
     });
@@ -193,17 +203,22 @@ async function getFRJobs(req, res) {
 
           let records = recordset.recordsets[0];
 
-          const map = new Map();
-          records.forEach((item) => map.set(item.JobNo, item));
-          jobData.forEach((item) =>
-            map.set(item.jobNo, { ...map.get(item.jobNo), ...item })
-          );
-          const fullJob = Array.from(map.values());
+          if (!records || records.length === 0) {
+            return res.status(200).send([]);
+          }
 
-          return res.status(200).json({
-            status: 'success',
-            data: fullJob,
+          const recordMap = new Map();
+          records.forEach(item => recordMap.set(item.JobNo, item));
+
+          const fullJob = records.map(record => {
+            const jobItem = jobData.find(item => item.jobNo === record.JobNo);
+            return {
+              ...record,
+              ...jobItem
+            };
           });
+
+          res.send(fullJob);
         }
       );
     });
