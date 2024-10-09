@@ -36,7 +36,7 @@ async function getTBRJobs(req, res) {
         INNER JOIN ORDERS O ON D.OrderNo=O.OrderNo 
         INNER JOIN Estim E ON D.PartNo=E.PartNo 
         INNER JOIN Materials M ON D.PartNo=M.PartNo
-        WHERE D.Status='Open' AND R.Status!='Finished' AND R.Status!='Closed' AND R.WorkCntr='212 FLASER' AND D.User_Text2='2. TBR' AND R.JobNo
+        WHERE D.Status='Open' AND R.Status!='Finished' AND R.Status!='Closed' AND R.WorkCntr='202 PUNCH' AND D.User_Text2='2. TBR' AND R.JobNo
         IN (
           SELECT R.JobNo 
           FROM OrderRouting R 
@@ -128,7 +128,7 @@ async function getFRJobs(req, res) {
         INNER JOIN ORDERS O ON D.OrderNo=O.OrderNo 
         INNER JOIN Estim E ON D.PartNo=E.PartNo 
         INNER JOIN Materials M ON D.PartNo=M.PartNo
-        WHERE D.Status='Open' AND R.Status!='Finished' AND R.Status!='Closed' AND R.WorkCntr='212 FLASER' AND (D.User_Text2 = '1. OFFICE' OR D.User_Text2 = '3. WIP') AND R.JobNo
+        WHERE D.Status='Open' AND R.Status!='Finished' AND R.Status!='Closed' AND R.WorkCntr='202 PUNCH' AND (D.User_Text2 = '1. OFFICE' OR D.User_Text2 = '3. WIP') AND R.JobNo
         IN (
           SELECT R.JobNo 
           FROM OrderRouting R 

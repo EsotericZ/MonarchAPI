@@ -155,12 +155,12 @@ async function getTBRJobs(req, res) {
               ...jobItem,
             };
           });
-    
+        
           fullJob.sort((a, b) => {
-            const dateA = new Date(a.DueDate);
-            const dateB = new Date(b.DueDate);
-            if (dateA < dateB) return -1;
-            if (dateA > dateB) return 1;
+            const numberA = a.User_Number3 || 0; 
+            const numberB = b.User_Number3 || 0;
+            if (numberA < numberB) return -1;
+            if (numberA > numberB) return 1;
             return a.JobNo.localeCompare(b.JobNo);
           });
 
