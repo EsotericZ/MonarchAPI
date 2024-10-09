@@ -4,6 +4,7 @@ let router = express.Router();
 const engineeringRoutes = require('./engineeringRoutes');
 const flaserRoutes = require('./flaserRoutes');
 const formingRoutes = require('./formingRoutes');
+const laserRoutes = require('./laserRoutes');
 const machiningRoutes = require('./machiningRoutes');
 const materialRoutes = require('./materialRoutes');
 const portalRoutes = require('./portalRoutes');
@@ -21,6 +22,7 @@ router.get('/', function (req, res) {
 router.use('/engineering', engineeringRoutes);
 router.use('/flaser', flaserRoutes);
 router.use('/forming', formingRoutes);
+router.use('/laser', laserRoutes);
 router.use('/machining', machiningRoutes);
 router.use('/material', materialRoutes);
 router.use('/portal', portalRoutes);
