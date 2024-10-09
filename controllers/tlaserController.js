@@ -134,15 +134,34 @@ async function getTBRJobs(req, res) {
             return res.status(200).send([]);
           }
 
-          const recordMap = new Map();
-          records.forEach(item => recordMap.set(item.JobNo, item));
+          const combinedRecords = records.reduce((acc, record) => {
+            const jobNo = record.JobNo;
 
-          const fullJob = records.map(record => {
+            if (!acc[jobNo]) {
+              acc[jobNo] = { ...record, SubPartNo: [record.SubPartNo] };
+            } else {
+              acc[jobNo].SubPartNo.push(record.SubPartNo);
+            }
+
+            return acc;
+          }, {});
+
+          let fullJob = Object.values(combinedRecords);
+
+          fullJob = fullJob.map(record => {
             const jobItem = jobData.find(item => item.jobNo === record.JobNo);
             return {
               ...record,
-              ...jobItem
+              ...jobItem,
             };
+          });
+    
+          fullJob.sort((a, b) => {
+            const dateA = new Date(a.DueDate);
+            const dateB = new Date(b.DueDate);
+            if (dateA < dateB) return -1;
+            if (dateA > dateB) return 1;
+            return a.JobNo.localeCompare(b.JobNo);
           });
 
           res.send(fullJob);
@@ -207,15 +226,34 @@ async function getFRJobs(req, res) {
             return res.status(200).send([]);
           }
 
-          const recordMap = new Map();
-          records.forEach(item => recordMap.set(item.JobNo, item));
+          const combinedRecords = records.reduce((acc, record) => {
+            const jobNo = record.JobNo;
 
-          const fullJob = records.map(record => {
+            if (!acc[jobNo]) {
+              acc[jobNo] = { ...record, SubPartNo: [record.SubPartNo] };
+            } else {
+              acc[jobNo].SubPartNo.push(record.SubPartNo);
+            }
+
+            return acc;
+          }, {});
+
+          let fullJob = Object.values(combinedRecords);
+
+          fullJob = fullJob.map(record => {
             const jobItem = jobData.find(item => item.jobNo === record.JobNo);
             return {
               ...record,
-              ...jobItem
+              ...jobItem,
             };
+          });
+    
+          fullJob.sort((a, b) => {
+            const dateA = new Date(a.DueDate);
+            const dateB = new Date(b.DueDate);
+            if (dateA < dateB) return -1;
+            if (dateA > dateB) return 1;
+            return a.JobNo.localeCompare(b.JobNo);
           });
 
           res.send(fullJob);
