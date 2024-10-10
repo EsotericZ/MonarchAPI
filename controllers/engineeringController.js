@@ -12,7 +12,7 @@ let config = {
     encrypt: false,
     trustServerCertificate: true,
   }
-};
+}
 
 async function getAllJobs(req, res) {
   try {
@@ -63,7 +63,7 @@ async function getAllJobs(req, res) {
     console.error('Error fetching job data:', error);
     return res.status(500).send({ error: 'An error occurred while fetching job data' });
   }
-};
+}
 
 async function getUnconfirmedJobs(req, res) {
   try {
@@ -96,7 +96,7 @@ async function getUnconfirmedJobs(req, res) {
     console.error('Error fetching job data:', error);
     return res.status(500).send({ error: 'An error occurred while fetching job data' });
   }
-};
+}
 
 async function getTBRJobs(req, res) {
   try {
@@ -147,7 +147,7 @@ async function getTBRJobs(req, res) {
     console.error('Error fetching job data:', error);
     return res.status(500).send({ error: 'An error occurred while fetching job data' });
   }
-};
+}
 
 async function getFutureJobs(req, res) {
   try {
@@ -204,7 +204,7 @@ async function getFutureJobs(req, res) {
     console.error('Error fetching job data:', error);
     return res.status(500).send({ error: 'An error occurred while fetching job data' });
   }
-};
+}
 
 async function getRepeatJobs(req, res) {
   try {
@@ -237,7 +237,7 @@ async function getRepeatJobs(req, res) {
     console.error('Error fetching job data:', error);
     return res.status(500).send({ error: 'An error occurred while fetching job data' });
   }
-};
+}
 
 async function getOutsourceJobs(req, res) {
   try {
@@ -264,7 +264,7 @@ async function getOutsourceJobs(req, res) {
     console.error('Error fetching job data:', error);
     return res.status(500).send({ error: 'An error occurred while fetching job data' });
   }
-};
+}
 
 async function getNextStep(req, res) {
   try {
@@ -304,7 +304,7 @@ async function getNextStep(req, res) {
     console.error('Error fetching job data:', error);
     return res.status(500).send({ error: 'An error occurred while fetching job data' });
   }
-};
+}
 
 async function getPrints(req, res) {
   try {
@@ -337,7 +337,7 @@ async function getPrints(req, res) {
     console.error('Error fetching job data:', error);
     return res.status(500).send({ error: 'An error occurred while fetching job data' });
   }
-};
+}
 
 async function getOutsourcePrints(req, res) {
   try {
@@ -370,7 +370,7 @@ async function getOutsourcePrints(req, res) {
     console.error('Error fetching job data:', error);
     return res.status(500).send({ error: 'An error occurred while fetching job data' });
   }
-};
+}
 
 async function updateJob(req, res) {
   try {
@@ -404,7 +404,7 @@ async function updateJob(req, res) {
       error: error.message
     });
   }
-};
+}
 
 async function updateModel(req, res) {
   try {
