@@ -83,6 +83,10 @@ User.init(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    specialty: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
   }, {
   sequelize,
   tableName: 'users',

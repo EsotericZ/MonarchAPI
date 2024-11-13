@@ -21,5 +21,6 @@ router.post('/updatePunch', userController.updatePunch);
 router.post('/updateShear', userController.updateShear);
 router.post('/updatePurchasing', userController.updatePurchasing);
 router.post('/updateBacklog', userController.updateBacklog);
+router.post('/updateSpecialty', userController.updateSpecialty);
 
 module.exports = router;

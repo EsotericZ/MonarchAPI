@@ -309,6 +309,24 @@ async function updateBacklog(req, res) {
   }
 }
 
+async function updateSpecialty(req, res) {
+  try {
+    let { id } = req.body;
+
+    const user = await User.findOne({ where: { id } });
+    if (!user) {
+      return res.status(404).send({ status: 'User not found' });
+    }
+
+    const newValue = user.specialty ? 0 : 1;
+    const result = await User.update({ specialty: newValue }, { where: { id } });
+
+    return res.status(200).send({ data: result });
+  } catch (err) {
+    return res.status(500).send({ status: err });
+  }
+}
+
 module.exports = {
   getAllUsers,
   getUserPassword,
@@ -328,4 +346,5 @@ module.exports = {
   updateShear,
   updatePurchasing,
   updateBacklog,
+  updateSpecialty,
 }
