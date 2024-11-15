@@ -1,20 +1,17 @@
-// const { Op } = require("sequelize");
 let sql = require('mssql');
-// require("dotenv").config();
+require('dotenv').config();
 
-// let sequelize = require('../config/index');
 let config = {
-    user: process.env.DB_USER,
-    password: process.env.DB_PASS,
-    server: '10.0.1.130\\E2SQLSERVER',
-    database: process.env.DB_NAME,
-    options: {
-        trustServerCertificate: true,
-    }
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  server: '10.0.1.130\\E2SQLSERVER',
+  database: process.env.DB_NAME,
+  options: {
+    trustServerCertificate: true,
+  }
 };
 
 async function getAllPOsDate(req, res) {
-  console.log('hit')
   let startDate = req.body.startDate;
   let endDate = req.body.endDate;
 

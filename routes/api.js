@@ -22,6 +22,7 @@ const suppliesRoutes = require('./suppliesRoutes');
 const tapRoutes = require('./tapRoutes');
 const tlaserRoutes = require('./tlaserRoutes');
 const userRoutes = require('./userRoutes');
+const vtigerRoutes = require('./vtigerRoutes');
 
 router.get('/', function (req, res) {
   res.send('Welcome to the API');
@@ -48,5 +49,6 @@ router.use('/supplies', suppliesRoutes);
 router.use('/taps', tapRoutes);
 router.use('/tlaser', tlaserRoutes);
 router.use('/users', userRoutes);
+router.use('/vtiger', vtigerRoutes);
 
 module.exports = router;
