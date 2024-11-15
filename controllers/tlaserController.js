@@ -1,6 +1,6 @@
 const { Jobs, TLJobs } = require('../models');
 let sql = require('mssql');
-require("dotenv").config();
+require('dotenv').config();
 
 let sequelize = require('../config/index');
 let config = {

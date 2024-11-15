@@ -1,6 +1,6 @@
 const { Jobs } = require('../models');
 let sql = require('mssql');
-require("dotenv").config();
+require('dotenv').config();
 
 let config = {
     user: process.env.DB_USER,

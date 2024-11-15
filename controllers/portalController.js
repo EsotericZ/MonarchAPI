@@ -1,5 +1,5 @@
 const CryptoJS = require('crypto-js');
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 async function login(req, res) {

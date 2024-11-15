@@ -23,18 +23,18 @@ async function getAllPOsDate(req, res) {
       .input('endDate', sql.NVarChar, endDate)
       .query(`
         SELECT 
-            POReleases.PONum AS "PONo",
-            POReleases.JobNo AS "JobNo",
-            MAX(OrderDet.PartNo) AS "PartNo",
-            MAX(OrderDet.QtyToMake) AS "JobQty",
-            POReleases.Qty AS "ActualSQFTJob",
-            PODet.QtyOrd AS "TotalSQFTPO",
-            PODet.PartNo AS "Material",
+            POReleases.PONum AS 'PONo',
+            POReleases.JobNo AS 'JobNo',
+            MAX(OrderDet.PartNo) AS 'PartNo',
+            MAX(OrderDet.QtyToMake) AS 'JobQty',
+            POReleases.Qty AS 'ActualSQFTJob',
+            PODet.QtyOrd AS 'TotalSQFTPO',
+            PODet.PartNo AS 'Material',
             PODet.DueDate,
             PODet.Status,
             PODet.ProdCode,
             PODet.GLCode,
-            m.Qty AS "MaterialQty"
+            m.Qty AS 'MaterialQty'
 
         FROM POReleases
         LEFT JOIN PODet ON POReleases.PONum = PODet.PONum
@@ -78,18 +78,18 @@ async function getAllPOsPO(req, res) {
     request.input('poNum', sql.NVarChar, poNum)
       .query(`
         SELECT 
-            POReleases.PONum AS "PONo",
-            POReleases.JobNo AS "JobNo",
-            MAX(OrderDet.PartNo) AS "PartNo",
-            MAX(OrderDet.QtyToMake) AS "JobQty",
-            POReleases.Qty AS "ActualSQFTJob",
-            PODet.QtyOrd AS "TotalSQFTPO",
-            PODet.PartNo AS "Material",
+            POReleases.PONum AS 'PONo',
+            POReleases.JobNo AS 'JobNo',
+            MAX(OrderDet.PartNo) AS 'PartNo',
+            MAX(OrderDet.QtyToMake) AS 'JobQty',
+            POReleases.Qty AS 'ActualSQFTJob',
+            PODet.QtyOrd AS 'TotalSQFTPO',
+            PODet.PartNo AS 'Material',
             PODet.DueDate,
             PODet.Status,
             PODet.ProdCode,
             PODet.GLCode,
-            m.Qty AS "MaterialQty"
+            m.Qty AS 'MaterialQty'
 
         FROM POReleases
         LEFT JOIN PODet ON POReleases.PONum = PODet.PONum
