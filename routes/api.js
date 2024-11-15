@@ -2,6 +2,7 @@ let express = require('express');
 let router = express.Router();
 
 const backlogRoutes = require('./backlogRoutes');
+const efficiencyRoutes = require('./efficiencyRoutes');
 const engineeringRoutes = require('./engineeringRoutes');
 const flaserRoutes = require('./flaserRoutes');
 const formingRoutes = require('./formingRoutes');
@@ -29,6 +30,7 @@ router.get('/', function (req, res) {
 });
 
 router.use('/backlog', backlogRoutes);
+router.use('/efficiency', efficiencyRoutes);
 router.use('/engineering', engineeringRoutes);
 router.use('/flaser', flaserRoutes);
 router.use('/forming', formingRoutes);
