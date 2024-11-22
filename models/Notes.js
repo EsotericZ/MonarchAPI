@@ -1,26 +1,25 @@
-const { Model, DataTypes } = require('sequelize');
+const { Model, DataTypes, UUIDV4 } = require('sequelize');
 const sequelize = require('../config/index');
-const Tasks = require('./Tasks');
 
 class Notes extends Model { }
 
 Notes.init(
   {
     id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
+      defaultValue: UUIDV4,
       primaryKey: true,
-      autoIncrement: true,
     },
     taskId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       allowNull: false,
       references: {
-        model: Tasks,
+        model: 'tasks',
         key: 'id',
       },
     },
     note: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: false,
     },
     date: {
@@ -28,9 +27,13 @@ Notes.init(
       defaultValue: DataTypes.NOW,
     },
     name: {
-      type: DataTypes.STRING,
+      type: DataTypes.UUID,
       allowNull: false,
-    }
+      references: {
+        model: 'users',
+        key: 'id',
+      },
+    },
   }, {
     sequelize,
     timestamps: false,

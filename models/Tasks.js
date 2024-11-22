@@ -1,4 +1,4 @@
-const { Model, DataTypes } = require('sequelize');
+const { Model, DataTypes, UUIDV4 } = require('sequelize');
 const sequelize = require('../config/index');
 
 class Tasks extends Model { }
@@ -6,15 +6,17 @@ class Tasks extends Model { }
 Tasks.init(
   {
     id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
+      defaultValue: UUIDV4,
       primaryKey: true,
-      autoIncrement: true,
     },
     assignedBy: {
-      type: DataTypes.STRING,
-    },
-    assignedTo: {
-      type: DataTypes.STRING,
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: {
+        model: 'users',
+        key: 'id',
+      },
     },
     description: {
       type: DataTypes.STRING,
