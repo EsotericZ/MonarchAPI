@@ -16,11 +16,14 @@ const TLJobs = require('./TLJobs');
 const Todo = require('./Todo');
 const User = require('./User');
 
+Tasks.belongsTo(User, { foreignKey: 'assignedBy', as: 'assigner' });
 Tasks.hasMany(TaskAssignments, { foreignKey: 'taskId', as: 'assignments' });
 TaskAssignments.belongsTo(Tasks, { foreignKey: 'taskId', as: 'task' });
 TaskAssignments.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 Tasks.hasMany(Notes, { foreignKey: 'taskId', as: 'notes' });
 Notes.belongsTo(Tasks, { foreignKey: 'taskId', as: 'task' });
+User.hasMany(Tasks, { foreignKey: 'assignedBy', as: 'assignedTasks' });
+User.hasMany(TaskAssignments, { foreignKey: 'userId', as: 'taskAssignments' });
 
 module.exports = {
   BDChart,

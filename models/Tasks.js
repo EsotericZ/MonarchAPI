@@ -18,6 +18,9 @@ Tasks.init(
         key: 'id',
       },
     },
+    taskName: {
+      type: DataTypes.STRING,
+    },
     description: {
       type: DataTypes.STRING,
     },
