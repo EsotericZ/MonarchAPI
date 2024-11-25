@@ -10,6 +10,7 @@ TaskAssignments.init(
     taskId: {
       type: DataTypes.UUID,
       allowNull: false,
+      primaryKey: true,
       references: {
         model: Tasks,
         key: 'id',
@@ -18,6 +19,7 @@ TaskAssignments.init(
     userId: {
       type: DataTypes.UUID,
       allowNull: false,
+      primaryKey: true,
       references: {
         model: User,
         key: 'id',
