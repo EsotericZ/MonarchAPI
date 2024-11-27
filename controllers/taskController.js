@@ -109,14 +109,11 @@ async function updateTask(req, res) {
   const transaction = await Tasks.sequelize.transaction();
 
   try {
-    console.log('Update request payload:', req.body);
-
-    // Map names to IDs
     const users = await User.findAll({
       where: {
-        name: assignedTo, // Look for users with names in `assignedTo`
+        name: assignedTo, 
       },
-      attributes: ['id'], // Only fetch the IDs
+      attributes: ['id'], 
     });
 
     const userIds = users.map((user) => user.id);
@@ -125,9 +122,6 @@ async function updateTask(req, res) {
       throw new Error('Some assigned users could not be found.');
     }
 
-    console.log('Mapped user IDs:', userIds);
-
-    // Update the task details
     const task = await Tasks.update(
       { taskName, description, priority, status },
       { where: { id }, transaction }
@@ -137,11 +131,9 @@ async function updateTask(req, res) {
       throw new Error('Task not found');
     }
 
-    console.log('Clearing existing task assignments...');
     await TaskAssignments.destroy({ where: { taskId: id }, transaction });
 
     if (userIds.length > 0) {
-      console.log('Adding new task assignments:', userIds);
       const taskAssignments = userIds.map((userId) => ({
         taskId: id,
         userId,
@@ -151,8 +143,6 @@ async function updateTask(req, res) {
     }
 
     await transaction.commit();
-    console.log('Task successfully updated:', id);
-
     return res.status(200).send({ message: 'Task updated successfully' });
   } catch (err) {
     console.error('Error updating task:', err);
