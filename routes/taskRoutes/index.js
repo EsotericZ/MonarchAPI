@@ -3,6 +3,7 @@ let router = express.Router();
 
 const taskController = require('../../controllers/taskController');
 
+router.post('/completeTask', taskController.completeTask);
 router.post('/createTask', taskController.createTask);
 router.post('/createTaskNote', taskController.createTaskNote);
 router.get('/getAllTasks', taskController.getAllTasks);

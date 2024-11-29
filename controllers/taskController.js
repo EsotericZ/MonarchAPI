@@ -1,5 +1,22 @@
 const { Notes, TaskAssignments, Tasks, User } = require('../models');
-const { Op, UUIDV4 } = require('sequelize');
+const { Op } = require('sequelize');
+
+async function completeTask(req, res) {
+  const { taskId } = req.body;
+
+  try {
+    const task = await Tasks.update(
+      { status: 'Complete' },
+      { where: { id: taskId } }
+    );
+
+    return res.status(200).send({ data: task });
+  } catch (err) {
+    await transaction.rollback();
+
+    return res.status(500).send({ status: err.message });
+  }
+}
 
 async function createTask(req, res) {
   const { assignedBy, assignedTo, taskName, description, priority, status } = req.body;
@@ -191,6 +208,7 @@ async function updateTaskNote(req, res) {
 }
 
 module.exports = {
+  completeTask,
   createTask,
   createTaskNote,
   getAllTasks,
