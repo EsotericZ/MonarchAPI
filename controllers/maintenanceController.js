@@ -16,29 +16,54 @@ let config = {
 };
 
 async function getAllRequests(req, res) {
-  await Maintenance.findAll()
-    .then((result) => {
-      return res.status(200).send({
-        data: result
-      })
-    }).catch((err) => {
-      return res.status(500).send({
-        status: err
-      })
-    })
+  try {
+    const result = await Maintenance.findAll();
+    return res.status(200).send({
+      data: result,
+    });
+  } catch (err) {
+    console.error('Error fetching requests:', err);
+    return res.status(500).send({
+      status: 'Error fetching requests',
+      error: err.message,
+    });
+  }
 }
 
+
 async function getAllEquipment(req, res) {
-  sql.connect(config, function (err,) {
-    if (err) console.error(err);
-    let request = new sql.Request();
-    request.query("SELECT DISTINCT PartNo, Descrip FROM Estim WHERE ProdCode='EQUIP' ORDER BY PartNo",
-      function (err, recordset) {
-        if (err) console.error(err);
-        let equipment = recordset.recordsets[0];
-        res.send(equipment);
+  try {
+    sql.connect(config, function (err,) {
+      if (err) {
+        console.error('Error connecting to MSSQL:', err);
+        return res.status(500).send({ error: 'Failed to connect to MSSQL' });
+      }
+    
+      let request = new sql.Request();
+      request.query(`
+        SELECT DISTINCT PartNo, Descrip 
+        FROM Estim 
+        WHERE ProdCode='EQUIP' 
+        ORDER BY PartNo`,
+      
+      function (err, result) {
+        if (err) {
+          console.error('Error executing MSSQL query:', err);
+          return res.status(500).send({ error: 'Failed to execute MSSQL query' });
+        }
+        let records = result.recordset;
+
+        if (!records || records.length === 0) {
+          return res.status(200).send([]);
+        }
+
+        res.status(200).send(records);
       })
-  })
+    })
+  } catch (error) {
+    console.error('Error fetching job data:', error);
+    return res.status(500).send({ error: 'An error occurred while fetching job data' });
+  }
 }
 
 async function getFolder(req, res) {
@@ -70,144 +95,261 @@ async function getFolder(req, res) {
 };
 
 async function createRequest(req, res) {
-  await Maintenance.create(req.body)
-    .then((result) => {
-      return res.status(200).send({
-        data: result
-      })
-    }).catch((err) => {
-      return res.status(500).send({
-        status: err
-      })
-    })
+  try {
+    const result = await Maintenance.create(req.body);
+
+    return res.status(200).send({
+      data: result,
+      message: 'Request created successfully',
+    });
+  } catch (err) {
+    console.error('Error creating request:', err);
+
+    return res.status(500).send({
+      error: 'Failed to create request',
+      details: err.message,
+    });
+  }
 }
 
 async function updateRequest(req, res) {
-  let record = req.body.record;
-  let updateRequest = req.body.updateRequest;
+  try {
+    const { record, updateRequest } = req.body;
 
-  await Maintenance.update(
-    updateRequest,
-    { where: { record: record } }
-  ).then((result) => {
+    if (!record || !updateRequest) {
+      return res.status(400).send({
+        status: 'Invalid input',
+        message: 'Both "record" and "updateRequest" are required.',
+      });
+    }
+
+    const [affectedRows] = await Maintenance.update(updateRequest, {
+      where: { record },
+    });
+
+    if (affectedRows === 0) {
+      return res.status(404).send({
+        status: 'Not Found',
+        message: `No record found with record number: ${record}`,
+      });
+    }
+
     return res.status(200).send({
-      data: result
-    })
-  }).catch((err) => {
+      message: 'Update successful',
+      affectedRows,
+    });
+  } catch (err) {
+    console.error('Error updating request:', err);
     return res.status(500).send({
-      status: err
-    })
-  })
+      status: 'Error',
+      message: err.message,
+    });
+  }
 }
 
 async function approveRequest(req, res) {
-  let record = req.body.record;
-  let approvedBy = req.body.approvedBy;
-  let hold = req.body.requestHold;
+  try {
+    const { record, approvedBy, requestHold } = req.body;
 
-  await Maintenance.update(
-    {
-      approvedBy: approvedBy,
-      hold: hold,
-    },
-    { where: { record: record } }
-  ).then((result) => {
+    if (!record || !approvedBy) {
+      return res.status(400).send({
+        status: 'Invalid input',
+        message: '"record" and "approvedBy" are required fields.',
+      });
+    }
+
+    const [affectedRows] = await Maintenance.update(
+      {
+        approvedBy,
+        hold: requestHold || false, 
+      },
+      { where: { record } }
+    );
+
+    if (affectedRows === 0) {
+      return res.status(404).send({
+        status: 'Not Found',
+        message: `No record found with record number: ${record}`,
+      });
+    }
+
     return res.status(200).send({
-      data: result
-    })
-  }).catch((err) => {
+      message: 'Request approved successfully',
+      affectedRows,
+    });
+  } catch (err) {
+    console.error('Error approving request:', err);
     return res.status(500).send({
-      status: err
-    })
-  })
+      status: 'Error',
+      message: err.message,
+    });
+  }
 }
 
 async function denyRequest(req, res) {
-  let record = req.body.record;
-  let done = req.body.done;
-  let comments = req.body.comments;
+  try {
+    const { record, done, comments } = req.body;
 
-  await Maintenance.update(
-    {
-      done: done,
-      comments: comments
-    },
-    { where: { record: record } }
-  ).then((result) => {
+    if (!record) {
+      return res.status(400).send({
+        status: 'Invalid input',
+        message: '"record" is a required field.',
+      });
+    }
+
+    const [affectedRows] = await Maintenance.update(
+      {
+        done: done || false,
+        comments: comments || '',
+      },
+      { where: { record } }
+    );
+
+    if (affectedRows === 0) {
+      return res.status(404).send({
+        status: 'Not Found',
+        message: `No record found with record number: ${record}`,
+      });
+    }
+
     return res.status(200).send({
-      data: result
-    })
-  }).catch((err) => {
+      message: 'Request denied successfully',
+      affectedRows,
+    });
+  } catch (err) {
+    console.error('Error denying request:', err);
     return res.status(500).send({
-      status: err
-    })
-  })
+      status: 'Error',
+      message: err.message,
+    });
+  }
 }
 
 async function deleteRequest(req, res) {
-  let record = req.body.record;
+  try {
+    const { record } = req.body;
 
-  await Maintenance.destroy({
-    where: { record: record }
-  }).then((result) => {
+    if (!record) {
+      return res.status(400).send({
+        status: 'Invalid input',
+        message: '"record" is a required field.',
+      });
+    }
+
+    const deletedRows = await Maintenance.destroy({
+      where: { record },
+    });
+
+    if (deletedRows === 0) {
+      return res.status(404).send({
+        status: 'Not Found',
+        message: `No record found with record number: ${record}`,
+      });
+    }
+
     return res.status(200).send({
-      data: result
-    })
-  }).catch((err) => {
+      message: 'Request deleted successfully',
+      deletedRows,
+    });
+  } catch (err) {
+    console.error('Error deleting request:', err);
     return res.status(500).send({
-      status: err
-    })
-  })
+      status: 'Error',
+      message: err.message,
+    });
+  }
 }
 
 async function holdRequest(req, res) {
-  let record = req.body.record;
-  let hold = req.body.requestHold;
-  let approvedBy = req.body.approvedBy;
+  try {
+    const { record, requestHold, approvedBy } = req.body;
 
-  await Maintenance.update(
-    {
-      hold: hold,
-      approvedBy: approvedBy,
-    },
-    { where: { record: record } }
-  ).then((result) => {
+    if (!record) {
+      return res.status(400).send({
+        status: 'Invalid Input',
+        message: '"record" is a required field.',
+      });
+    }
+
+    if (typeof requestHold !== 'boolean') {
+      return res.status(400).send({
+        status: 'Invalid Input',
+        message: '"requestHold" must be a boolean value.',
+      });
+    }
+
+    const [updatedRows] = await Maintenance.update(
+      {
+        hold: requestHold,
+        approvedBy: approvedBy || null, 
+      },
+      { where: { record } }
+    );
+
+    if (updatedRows === 0) {
+      return res.status(404).send({
+        status: 'Not Found',
+        message: `No record found with record number: ${record}`,
+      });
+    }
+
     return res.status(200).send({
-      data: result
-    })
-  }).catch((err) => {
+      message: 'Request updated successfully',
+      updatedRows,
+    });
+  } catch (err) {
+    console.error('Error updating request hold status:', err);
     return res.status(500).send({
-      status: err
-    })
-  })
+      status: 'Error',
+      message: err.message,
+    });
+  }
 }
 
 async function doneRequest(req, res) {
-  let record = req.body.record;
-  let comments = req.body.comments;
-  let done = req.body.done;
+  try {
+    const { record, comments, done } = req.body;
 
-  // sql.connect(config, function(err,) {
-  //     if (err) console.error(err);
-  //     let request = new sql.Request();
-  //     request.query("SELECT DISTINCT PartNo, Descrip FROM Estim WHERE ProdCode='EQUIP' ORDER BY PartNo", 
-  //     function(err) {
-  //         if (err) console.error(err);
-  //     })
-  // })
+    if (!record) {
+      return res.status(400).send({
+        status: 'Invalid Input',
+        message: '"record" is a required field.',
+      });
+    }
 
-  await Maintenance.update(
-    { done: done },
-    { where: { record: record } }
-  ).then((result) => {
+    if (typeof done !== 'boolean') {
+      return res.status(400).send({
+        status: 'Invalid Input',
+        message: '"done" must be a boolean value.',
+      });
+    }
+
+    const [updatedRows] = await Maintenance.update(
+      { 
+        done,
+        comments: comments || null,
+      },
+      { where: { record } }
+    );
+
+    if (updatedRows === 0) {
+      return res.status(404).send({
+        status: 'Not Found',
+        message: `No record found with record number: ${record}`,
+      });
+    }
+
     return res.status(200).send({
-      data: result
-    })
-  }).catch((err) => {
+      message: 'Request marked as done successfully',
+      updatedRows,
+    });
+  } catch (err) {
+    console.error('Error marking request as done:', err);
     return res.status(500).send({
-      status: err
-    })
-  })
+      status: 'Error',
+      message: err.message,
+    });
+  }
 }
 
 module.exports = {
