@@ -53,6 +53,11 @@ Maintenance.init(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    priority: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'medium',
+    },
   }, {
   sequelize,
   timestamps: true,
