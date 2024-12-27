@@ -149,7 +149,8 @@ async function updateRequest(req, res) {
 
 async function approveRequest(req, res) {
   try {
-    const { record, approvedBy, requestHold } = req.body;
+    const { record, approvedBy } = req.body;
+    console.log(record, approvedBy)
 
     if (!record || !approvedBy) {
       return res.status(400).send({
@@ -161,7 +162,6 @@ async function approveRequest(req, res) {
     const [affectedRows] = await Maintenance.update(
       {
         approvedBy,
-        hold: requestHold || false, 
       },
       { where: { record } }
     );
