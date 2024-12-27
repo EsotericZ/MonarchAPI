@@ -314,7 +314,7 @@ async function holdRequest(req, res) {
 
 async function doneRequest(req, res) {
   try {
-    const { record, comments, done } = req.body;
+    const { record, done } = req.body;
 
     if (!record) {
       return res.status(400).send({
@@ -333,7 +333,6 @@ async function doneRequest(req, res) {
     const [updatedRows] = await Maintenance.update(
       { 
         done,
-        comments: comments || null,
       },
       { where: { record } }
     );

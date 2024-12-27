@@ -1,6 +1,7 @@
 const BDChart = require('./BDChart');
 const Jobs = require('./Jobs');
 const Maintenance = require('./Maintenance');
+const MaintenanceNotes = require('./MaintenanceNotes');
 const Material = require('./Material');
 const Notes = require('./Notes');
 const QCInfo = require('./QCInfo');
@@ -25,10 +26,15 @@ Notes.belongsTo(Tasks, { foreignKey: 'taskId', as: 'task' });
 User.hasMany(Tasks, { foreignKey: 'assignedBy', as: 'assignedTasks' });
 User.hasMany(TaskAssignments, { foreignKey: 'userId', as: 'taskAssignments' });
 
+// Maintenance and MaintenanceNotes relationship
+Maintenance.hasMany(MaintenanceNotes, { foreignKey: 'maintenanceRecord', as: 'notes' });
+MaintenanceNotes.belongsTo(Maintenance, { foreignKey: 'maintenanceRecord', as: 'maintenance' });
+
 module.exports = {
   BDChart,
   Jobs,
   Maintenance,
+  MaintenanceNotes,
   Material,
   Notes,
   QCInfo,
