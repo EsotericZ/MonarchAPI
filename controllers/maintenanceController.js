@@ -115,6 +115,7 @@ async function createRequest(req, res) {
 async function updateRequest(req, res) {
   try {
     const { record, updateRequest } = req.body;
+    console.log(record, updateRequest);
 
     if (!record || !updateRequest) {
       return res.status(400).send({
@@ -150,7 +151,6 @@ async function updateRequest(req, res) {
 async function approveRequest(req, res) {
   try {
     const { record, approvedBy } = req.body;
-    console.log(record, approvedBy)
 
     if (!record || !approvedBy) {
       return res.status(400).send({
