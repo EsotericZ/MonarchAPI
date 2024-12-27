@@ -18,9 +18,15 @@ let config = {
 async function getAllRequests(req, res) {
   try {
     const result = await Maintenance.findAll();
-    return res.status(200).send({
-      data: result,
+    const sortedData = result.sort((a, b) => {
+      const priorityOrder = { urgent: 1, high: 2, medium: 3, low: 4 };
+      const priorityA = priorityOrder[a.priority.toLowerCase()] || 5;
+      const priorityB = priorityOrder[b.priority.toLowerCase()] || 5;
+
+      if (priorityA !== priorityB) return priorityA - priorityB;
+      return a.record - b.record;
     });
+    return res.status(200).send({ data: sortedData });
   } catch (err) {
     console.error('Error fetching requests:', err);
     return res.status(500).send({
@@ -29,7 +35,6 @@ async function getAllRequests(req, res) {
     });
   }
 }
-
 
 async function getAllEquipment(req, res) {
   try {
@@ -162,6 +167,7 @@ async function approveRequest(req, res) {
     const [affectedRows] = await Maintenance.update(
       {
         approvedBy,
+        hold: false,
       },
       { where: { record } }
     );
@@ -281,7 +287,7 @@ async function holdRequest(req, res) {
     const [updatedRows] = await Maintenance.update(
       {
         hold: requestHold,
-        approvedBy: approvedBy || null, 
+        approvedBy: approvedBy || null,
       },
       { where: { record } }
     );
