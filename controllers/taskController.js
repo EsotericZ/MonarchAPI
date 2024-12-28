@@ -111,7 +111,7 @@ async function getUserTasks(req, res) {
       include: [
         {
           model: User,
-          as: 'assigner', 
+          as: 'assigner',
           attributes: ['id', 'name'],
         },
         {
@@ -132,7 +132,29 @@ async function getUserTasks(req, res) {
       ],
     });
 
-    return res.status(200).send({ data: result });
+    const sortedTasks = result.map((task) => {
+      if (task.notes && Array.isArray(task.notes)) {
+        task.notes = task.notes.sort((a, b) => new Date(a.date) - new Date(b.date));
+      }
+      return task;
+    });
+
+    const priorityOrder = { urgent: 1, high: 2, medium: 3, low: 4 };
+    const statusOrder = { active: 1, process: 2 };
+
+    const finalSortedTasks = sortedTasks.sort((a, b) => {
+      const priorityA = priorityOrder[a.priority.toLowerCase()] || 5;
+      const priorityB = priorityOrder[b.priority.toLowerCase()] || 5;
+
+      if (priorityA !== priorityB) return priorityA - priorityB;
+
+      const statusA = statusOrder[a.status.toLowerCase()] || 3;
+      const statusB = statusOrder[b.status.toLowerCase()] || 3;
+
+      return statusA - statusB;
+    });
+
+    return res.status(200).send({ data: finalSortedTasks });
   } catch (err) {
     console.error('Error fetching tasks:', err);
     return res.status(500).send({ status: err.message });

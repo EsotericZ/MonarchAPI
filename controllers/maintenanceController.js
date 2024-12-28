@@ -15,36 +15,6 @@ let config = {
   }
 };
 
-// async function getAllRequests(req, res) {
-//   try {
-//     const result = await Maintenance.findAll({
-//       include: [
-//         {
-//           model: MaintenanceNotes,
-//           as: 'notes',
-//           attributes: ['id', 'note', 'date', 'name'],
-//           order: [['date', 'ASC']],
-//         },
-//       ],
-//     });
-//     const sortedData = result.sort((a, b) => {
-//       const priorityOrder = { urgent: 1, high: 2, medium: 3, low: 4 };
-//       const priorityA = priorityOrder[a.priority.toLowerCase()] || 5;
-//       const priorityB = priorityOrder[b.priority.toLowerCase()] || 5;
-
-//       if (priorityA !== priorityB) return priorityA - priorityB;
-//       return a.record - b.record;
-//     });
-//     return res.status(200).send({ data: sortedData });
-//   } catch (err) {
-//     console.error('Error fetching requests:', err);
-//     return res.status(500).send({
-//       status: 'Error fetching requests',
-//       error: err.message,
-//     });
-//   }
-// }
-
 async function getAllRequests(req, res) {
   try {
     const result = await Maintenance.findAll({
@@ -57,15 +27,13 @@ async function getAllRequests(req, res) {
       ],
     });
 
-    // Sort notes for each maintenance record in ascending order by date
     const sortedData = result.map((record) => {
       if (record.notes && Array.isArray(record.notes)) {
-        record.notes = record.notes.sort((a, b) => new Date(a.date) - new Date(b.date)); // Sort notes by date ascending
+        record.notes = record.notes.sort((a, b) => new Date(a.date) - new Date(b.date));
       }
       return record;
     });
 
-    // Sort maintenance records by priority and record number
     const finalSortedData = sortedData.sort((a, b) => {
       const priorityOrder = { urgent: 1, high: 2, medium: 3, low: 4 };
       const priorityA = priorityOrder[a.priority.toLowerCase()] || 5;
@@ -84,8 +52,6 @@ async function getAllRequests(req, res) {
     });
   }
 }
-
-
 
 async function getAllEquipment(req, res) {
   try {
