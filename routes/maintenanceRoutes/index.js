@@ -13,5 +13,6 @@ router.post('/denyRequest', maintenanceController.denyRequest);
 router.post('/deleteRequest', maintenanceController.deleteRequest);
 router.post('/holdRequest', maintenanceController.holdRequest);
 router.post('/doneRequest', maintenanceController.doneRequest);
+router.post('/addMaintenanceNote', maintenanceController.addMaintenanceNote);
 
 module.exports = router;
