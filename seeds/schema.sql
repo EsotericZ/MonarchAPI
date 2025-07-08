@@ -1,0 +1,275 @@
+-- Create the database if needed
+CREATE DATABASE IF NOT EXISTS monarch;
+USE monarch;
+
+-- Table: users
+CREATE TABLE IF NOT EXISTS users (
+  id CHAR(36) NOT NULL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  username VARCHAR(255) UNIQUE NOT NULL,
+  number INT NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  role VARCHAR(255) DEFAULT 'employee',
+  maintenance BOOLEAN DEFAULT FALSE,
+  shipping BOOLEAN DEFAULT FALSE,
+  engineering BOOLEAN DEFAULT FALSE,
+  tlaser BOOLEAN DEFAULT FALSE,
+  quality BOOLEAN DEFAULT FALSE,
+  forming BOOLEAN DEFAULT FALSE,
+  machining BOOLEAN DEFAULT FALSE,
+  laser BOOLEAN DEFAULT FALSE,
+  saw BOOLEAN DEFAULT FALSE,
+  punch BOOLEAN DEFAULT FALSE,
+  shear BOOLEAN DEFAULT FALSE,
+  purchasing BOOLEAN DEFAULT FALSE,
+  backlog BOOLEAN DEFAULT FALSE,
+  specialty BOOLEAN DEFAULT FALSE
+);
+
+-- Table: bdchart
+CREATE TABLE IF NOT EXISTS bdchart (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  type VARCHAR(255),
+  subType VARCHAR(255),
+  gauge VARCHAR(255),
+  thickness VARCHAR(255),
+  radius VARCHAR(255),
+  bd VARCHAR(255),
+  punch VARCHAR(255),
+  die VARCHAR(255),
+  dieOpening VARCHAR(255),
+  notes VARCHAR(255),
+  verified BOOLEAN
+);
+
+-- Table: jobs
+CREATE TABLE IF NOT EXISTS jobs (
+  id CHAR(36) NOT NULL PRIMARY KEY, -- UUID
+  jobNo VARCHAR(255) NOT NULL UNIQUE,
+  engineer VARCHAR(255),
+  jobStatus VARCHAR(255),
+  formProgrammer VARCHAR(255),
+  formStatus VARCHAR(255),
+  tlProgrammer VARCHAR(255),
+  tlStatus VARCHAR(255),
+  inspector VARCHAR(255),
+  qcNotes VARCHAR(255),
+  notes VARCHAR(255),
+  model BOOLEAN NOT NULL DEFAULT 0,
+  expedite BOOLEAN NOT NULL DEFAULT 0,
+  blnotes VARCHAR(255),
+  osvnotes VARCHAR(255),
+  ariba VARCHAR(255) DEFAULT NULL,
+  cdate DATETIME DEFAULT NULL,
+  email BOOLEAN NOT NULL DEFAULT 0,
+  hold BOOLEAN NOT NULL DEFAULT 0,
+  createdAt DATETIME,
+  updatedAt DATETIME DEFAULT NULL
+);
+
+-- Table: maintenance
+CREATE TABLE IF NOT EXISTS maintenance (
+  id CHAR(36) DEFAULT (UUID()),
+  record INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+  requestedBy VARCHAR(255),
+  area VARCHAR(255),
+  equipment VARCHAR(255),
+  requestType VARCHAR(255),
+  description VARCHAR(255),
+  approvedBy VARCHAR(255),
+  repairedBy VARCHAR(255),
+  repairDescription VARCHAR(255),
+  repairTime VARCHAR(255),
+  comments VARCHAR(255),
+  hold BOOLEAN DEFAULT FALSE,
+  done BOOLEAN DEFAULT FALSE,
+  priority VARCHAR(255) NOT NULL DEFAULT 'medium',
+  createdAt DATETIME,
+  updatedAt DATETIME
+);
+
+-- Table: maintenancenotes
+CREATE TABLE IF NOT EXISTS maintenancenotes (
+  id CHAR(36) NOT NULL PRIMARY KEY, -- UUID
+  maintenanceRecord INT NOT NULL,
+  note TEXT NOT NULL,
+  date DATETIME DEFAULT CURRENT_TIMESTAMP,
+  name VARCHAR(255),
+  CONSTRAINT fk_maintenanceRecord
+    FOREIGN KEY (maintenanceRecord)
+    REFERENCES maintenance(record)
+    ON DELETE CASCADE
+);
+
+-- Table: material
+CREATE TABLE IF NOT EXISTS material (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  programNo VARCHAR(255) NOT NULL UNIQUE,
+  material VARCHAR(255) NOT NULL,
+  jobNo VARCHAR(255),
+  area VARCHAR(255),
+  machine VARCHAR(255),
+  checkMatl BOOLEAN DEFAULT TRUE,
+  needMatl BOOLEAN DEFAULT FALSE,
+  onOrder BOOLEAN DEFAULT FALSE,
+  verified BOOLEAN DEFAULT FALSE,
+  completed BOOLEAN DEFAULT FALSE,
+  expected DATETIME DEFAULT NULL,
+  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Table: tasks
+CREATE TABLE IF NOT EXISTS tasks (
+  id CHAR(36) NOT NULL PRIMARY KEY, -- UUID
+  assignedBy CHAR(36) NOT NULL,
+  taskName VARCHAR(255),
+  description VARCHAR(255),
+  priority VARCHAR(255) NOT NULL DEFAULT 'Medium',
+  status VARCHAR(255),
+  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (assignedBy) REFERENCES users(id)
+);
+
+-- Table: notes
+CREATE TABLE IF NOT EXISTS notes (
+  id CHAR(36) NOT NULL PRIMARY KEY, -- UUID
+  taskId CHAR(36) NOT NULL,
+  note TEXT NOT NULL,
+  date DATETIME DEFAULT CURRENT_TIMESTAMP,
+  name CHAR(36) NOT NULL,
+  CONSTRAINT fk_notes_task
+    FOREIGN KEY (taskId)
+    REFERENCES tasks(id)
+    ON DELETE CASCADE,
+  CONSTRAINT fk_notes_user
+    FOREIGN KEY (name)
+    REFERENCES users(id)
+    ON DELETE CASCADE
+);
+
+-- Table: qcinfo
+CREATE TABLE IF NOT EXISTS qcinfo (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  custCode VARCHAR(255),
+  coc BOOLEAN NOT NULL DEFAULT 0,
+  matlCert BOOLEAN NOT NULL DEFAULT 0,
+  platCert BOOLEAN NOT NULL DEFAULT 0,
+  addInfo BOOLEAN NOT NULL DEFAULT 0,
+  notes VARCHAR(255)
+);
+
+-- Table: scaleitems
+CREATE TABLE IF NOT EXISTS scaleitems (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  scaleId INT UNIQUE,
+  itemId INT UNIQUE,
+  itemName VARCHAR(255),
+  itemLocation VARCHAR(255),
+  alert INT,
+  rack INT,
+  shelf INT,
+  bin VARCHAR(255),
+  area VARCHAR(255),
+  smallItem BOOLEAN DEFAULT FALSE
+);
+
+-- Table: scalelogs
+CREATE TABLE IF NOT EXISTS scalelogs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  scaleName VARCHAR(255),
+  itemLocation VARCHAR(255),
+  oldQty INT,
+  newQty INT,
+  employee VARCHAR(255),
+  timeStamp VARCHAR(255)
+);
+
+-- Table: scales
+CREATE TABLE IF NOT EXISTS scales (
+  id CHAR(36) NOT NULL PRIMARY KEY, -- UUID
+  portNo VARCHAR(255),
+  rack INT
+);
+
+-- Table: shipping
+CREATE TABLE IF NOT EXISTS shipping (
+  id CHAR(36) NOT NULL, -- UUID
+  record INT AUTO_INCREMENT PRIMARY KEY,
+  customer VARCHAR(255),
+  vendor VARCHAR(255),
+  location VARCHAR(255),
+  priority VARCHAR(255),
+  jobNo VARCHAR(255),
+  poNo VARCHAR(255),
+  delivery VARCHAR(255),
+  comments VARCHAR(255),
+  scheduled BOOLEAN DEFAULT FALSE,
+  date DATETIME,
+  timeFinish DATETIME,
+  driver VARCHAR(255),
+  done BOOLEAN DEFAULT FALSE,
+  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Table: supplies
+CREATE TABLE IF NOT EXISTS supplies (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  supplies VARCHAR(255),
+  department VARCHAR(255) NOT NULL,
+  requestedBy VARCHAR(255),
+  notes VARCHAR(255),
+  productLink VARCHAR(255),
+  jobNo VARCHAR(255),
+  needSupplies BOOLEAN DEFAULT TRUE,
+  onOrder BOOLEAN DEFAULT FALSE,
+  completed BOOLEAN DEFAULT FALSE,
+  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updatedAt DATETIME DEFAULT NULL,
+  expected DATETIME DEFAULT NULL
+);
+
+-- Table: taps
+CREATE TABLE IF NOT EXISTS taps (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  tapName VARCHAR(255) NOT NULL UNIQUE,
+  holeSize VARCHAR(255),
+  type VARCHAR(255),
+  notes VARCHAR(255),
+  active BOOLEAN DEFAULT TRUE
+);
+
+
+-- Table: taskAssignments
+CREATE TABLE IF NOT EXISTS taskAssignments (
+  taskId CHAR(36) NOT NULL,
+  userId CHAR(36) NOT NULL,
+  PRIMARY KEY (taskId, userId),
+  FOREIGN KEY (taskId) REFERENCES tasks(id),
+  FOREIGN KEY (userId) REFERENCES users(id)
+);
+
+-- Table: tljobs
+CREATE TABLE IF NOT EXISTS tljobs (
+  id CHAR(36) NOT NULL PRIMARY KEY,
+  jobNo VARCHAR(255) NOT NULL UNIQUE,
+  nested BOOLEAN,
+  programNo VARCHAR(255),
+  needMatl BOOLEAN,
+  matlOnOrder BOOLEAN,
+  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updatedAt DATETIME DEFAULT NULL
+);
+
+-- Table: todos
+CREATE TABLE IF NOT EXISTS todos (
+  id CHAR(36) NOT NULL PRIMARY KEY,
+  description VARCHAR(255),
+  requestType VARCHAR(255),
+  area VARCHAR(255),
+  priority VARCHAR(255),
+  status VARCHAR(255)
+);
+
